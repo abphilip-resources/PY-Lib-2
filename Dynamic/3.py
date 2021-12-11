@@ -1,5 +1,5 @@
-class HMM:                                                                  # Hidden Markov Model
-    def __init__(self, p, a, b):
+class HMM:                                                                  # Hidden Markov Model class
+    def __init__(self, p, a, b):                                            # Constructor
         self.p = p                                                          # Initial probability
         self.a = a                                                          # Transition probability
         self.b = b                                                          # Emission probability
@@ -79,21 +79,20 @@ speech = HMM(
     }
 )
 
-class PathProbabilityWithBackPointer:
-    def __init__(self, probability, previous_state=None):
-        self.probability = probability
-        self.previous_state = previous_state
+class prob:                                                                 # Backtracking Probability class
+    def __init__(self, probability, previous_state=None):                   # Constructor
+        self.probability = probability                                      # Probability
+        self.previous_state = previous_state                                # Previous state
 
 
 def greedy(hmm, ob):                                                        # Greedy algorithm 
     return [max(hmm.all, key=lambda s: hmm.b[s][z]) for z in ob]
 
-
 def viterbi(hmm, ob):                                                       # Viterbi algorithm
     v_grid = [{} for _ in ob]
 
     for s in hmm.all:
-        v_grid[0][s] = PathProbabilityWithBackPointer(
+        v_grid[0][s] = prob(
             hmm.p[s] * hmm.b[s][ob[0]]
         )
 
@@ -112,7 +111,7 @@ def viterbi(hmm, ob):                                                       # Vi
                 key=lambda probability_and_state: probability_and_state[0]
             )
 
-            v_grid[t][s] = PathProbabilityWithBackPointer(
+            v_grid[t][s] = prob(
                 max_transition_probability * hmm.b[s][ob[t]],
                 best_previous_state
             )
