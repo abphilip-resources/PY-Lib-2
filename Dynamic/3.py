@@ -1,3 +1,8 @@
+class prob:                                                                 # Backtracking Probability class
+    def __init__(self, pr, prev=None):                                      # Constructor
+        self.pr = pr                                                        # Probability
+        self.prev = prev                                                    # Previous state
+
 class HMM:                                                                  # Hidden Markov Model class
     def __init__(self, p, a, b):                                            # Constructor
         self.p = p                                                          # Initial probability
@@ -5,7 +10,7 @@ class HMM:                                                                  # Hi
         self.b = b                                                          # Emission probability
         self.all = p.keys()                                                 # All states
 
-speech = HMM(
+speech = HMM(                                                               # Object of HMM
     # Initial Probabilities                                                 --> self.p
     {'au': 0.5, 'to': 0, 'o': 0.5, 'tter': 0, 'mo': 0, 'bile': 0},
 
@@ -79,63 +84,31 @@ speech = HMM(
     }
 )
 
-class prob:                                                                 # Backtracking Probability class
-    def __init__(self, probability, previous_state=None):                   # Constructor
-        self.probability = probability                                      # Probability
-        self.previous_state = previous_state                                # Previous state
-
-
 def greedy(hmm, ob):                                                        # Greedy algorithm 
     return [max(hmm.all, key=lambda s: hmm.b[s][z]) for z in ob]
 
 def viterbi(hmm, ob):                                                       # Viterbi algorithm
-    v_grid = [{} for _ in ob]
+    grid = [{} for _ in ob]
+    for s in hmm.all:                                                       # For each state
+        grid[0][s] = prob(hmm.p[s] * hmm.b[s][ob[0]])                       # Take Initial and Emission probabilities, save result to grid
 
-    for s in hmm.all:
-        v_grid[0][s] = prob(
-            hmm.p[s] * hmm.b[s][ob[0]]
-        )
+    for t in range(1, len(ob)):                                             # For each time step
+        for s in hmm.all:                                                   # For each state
+            pos = [(grid[t-1][r].pr * hmm.a[r][s], r) for r in hmm.all]     # Take previous state and Transition probability
+            mtp, bps = max(pos, key=lambda x: x[0])                         # Get Maximum Transition probability from best previous state
+            grid[t][s] = prob(mtp * hmm.b[s][ob[t]], bps)                   # Calculate Final probability, save to grid with best previous state
 
-    for t in range(1, len(ob)):
-        for s in hmm.all:
-            possible_transition_probabilities = [
-                (
-                    v_grid[t - 1][r].probability * hmm.a[r][s],
-                    r
-                )
-                for r in hmm.all
-            ]
-
-            max_transition_probability, best_previous_state = max(
-                possible_transition_probabilities,
-                key=lambda probability_and_state: probability_and_state[0]
-            )
-
-            v_grid[t][s] = prob(
-                max_transition_probability * hmm.b[s][ob[t]],
-                best_previous_state
-            )
-
-    max_end_state = max(
-        hmm.all,
-        key=lambda s: v_grid[-1][s].probability
-    )
-
-    path_states = []
-    last_state = max_end_state
-    for t in range(len(ob) - 1, -1, -1):
-        path_states.append(last_state)
-        last_state = v_grid[t][last_state].previous_state
-
-    path_states.reverse()
-
-    return path_states
+    path, l = [], max(hmm.all, key=lambda s: grid[-1][s].pr)                # Get last state and initialize path
+    for t in range(len(ob)-1, -1, -1):                                      # For each time step
+        path.append(l)                                                      # Add last state to path
+        l = grid[t][l].prev                                                 # Get previous state using backtracking
+    return reversed(path)                                                   # Return reversed path
 
 samples = [['sound-o', 'sound-tter'],
     ['sound-o', 'sound-tter', 'sound-mo', 'sound-bile']]                    # Samples
 
 for s in samples:                                                       
     print()
-    print(f"SAMPLE  :  {'  '.join(s)}")                                     # Sample name
-    print(f"GREEDY  :  {'  '.join(greedy(speech, s))}")                     # Greedy algorithm output   
-    print(f"VITERBI :  {'  '.join(viterbi(speech, s))}")                    # Viterbi algorithm output
+    print(f"SAMPLE  :  {' : '.join(s)}")                                    # Name of the sample
+    print(f"GREEDY  :  {' : '.join(greedy(speech, s))}")                    # Greedy algorithm output   
+    print(f"VITERBI :  {' : '.join(viterbi(speech, s))}")                   # Viterbi algorithm output
