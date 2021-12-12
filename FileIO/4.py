@@ -9,7 +9,7 @@ S = {                                           # Dictionary of categories and t
     "images": ['.jpg','.jpeg','.png']
 }
 
-def pick(k):
+def pick(k):                                    # Define function
     for c,s in S.items():                       # Iterate through the dictionary
         for z in s:
             if(z==k): return c                  # Returns the key of the dictionary i.e. the category

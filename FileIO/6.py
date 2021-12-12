@@ -1,25 +1,23 @@
 import os, re
 import urllib.parse
 import urllib.request
+url = "http://699340.youcanlearnit.net/image009.jpg"        # URL
        
-def download(first_url, output_dir):
-    if not os.path.isdir(output_dir):
-        os.mkdir(output_dir)
-    url_head, url_tail = os.path.split(first_url)
-    first_index = re.findall(r'[0-9]+', url_tail)[-1]
-    index_count, error_count = 0, 0
-    while(error_count < 5):
-        next_index = str(int(first_index) + index_count)
-        if first_index[0] == '0': # zero padded
-            next_index = '0' * (len(first_index) - len(next_index)) + next_index
-        next_url = urllib.parse.urljoin(url_head, re.sub(first_index, next_index, url_tail))
+def download(url, d):                                       # Define function
+    if not os.path.isdir(d): os.mkdir(d)                    # Create directory if not exists
+    h, f = os.path.split(url)                               # Split URL into host and file name
+    a = re.findall(r'[0-9]+', f)[-1]                        # Get last number in file name
+    for z in range(3):                                      # To find 3 subsequent files
+        ni = str(int(a) + z)                                # Find the next image number
+        if a[0] == '0':                                     # If the first digit is 0
+            ni = '0' * (len(a) - len(ni)) + ni              # Add zeros to the front
+        u = urllib.parse.urljoin(h, re.sub(a, ni, f))       # Join host and file name
         try:
-            output_file = os.path.join(output_dir, os.path.basename(next_url))
-            urllib.request.urlretrieve(next_url, output_file)
-            print('Successfully downloaded {}'.format(os.path.basename(next_url)))
-        except IOError:
-            print('Could not retrieve {}'.format(next_url))
-            error_count += 1
-        index_count += 1        
+            out = os.path.join(d, os.path.basename(u))      # Set path for download
+            urllib.request.urlretrieve(u, out)              # Download the file
+            print(f'Downloaded {os.path.basename(u)}')      # Print notification
+        except IOError:                                     # If file not found
+            print(f'Could not retrieve {u}')                # Print error
+            break                                           # Break out of loop
     
-download('http://699340.youcanlearnit.net/image001.jpg', '.\\images')   # Function Call
+download(url, '.\\images')                                  # Function Call
