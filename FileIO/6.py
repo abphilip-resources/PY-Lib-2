@@ -1,9 +1,8 @@
-import os
-import re
+import os, re
 import urllib.parse
 import urllib.request
        
-def download_files(first_url, output_dir):
+def download(first_url, output_dir):
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
     url_head, url_tail = os.path.split(first_url)
@@ -23,5 +22,4 @@ def download_files(first_url, output_dir):
             error_count += 1
         index_count += 1        
     
-if __name__ == '__main__':
-    download_files('http://699340.youcanlearnit.net/image001.jpg', '.\\images')
+download('http://699340.youcanlearnit.net/image001.jpg', '.\\images')   # Function Call
