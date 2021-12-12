@@ -1,3 +1,3 @@
-# Python: Decorators
+# Python: Jupyter
 
-### [`Official Docs`](https://docs.python.org/3/library/functools.html)
+### [`Official Documentation`](https://jupyter.org/documentation)
