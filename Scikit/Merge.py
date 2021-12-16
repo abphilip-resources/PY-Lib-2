@@ -6,23 +6,22 @@ import os
 
 def create_baseFile():
 	baseData = '''{
-	"cells": [{"cell_type": "markdown", "metadata": {},
-	"source": ["# *Merged Jupyter Notebook*"]}],
-	"metadata": {
-	"kernelspec": {
-	"display_name": "Python 3",
-	"language": "python",
-	"name": "python3"},
-	"language_info": {
-	"codemirror_mode": {"name": "ipython","version": 3},
-	"file_extension": ".py",
-	"mimetype": "text/x-python",
-	"name": "python",
-	"nbconvert_exporter": "python",
-	"pygments_lexer": "ipython3",
-	"version": "3.7.4"}
+        "cells": [{"cell_type": "markdown", "metadata": {},
+        "source": ["# *Merged Jupyter Notebook*"]}],
+        "metadata": {
+        "kernelspec": {
+        "display_name": "Python 3",
+        "language": "python",
+        "name": "python3"},
+        "language_info": {
+        "codemirror_mode": {"name": "ipython","version": 3},
+        "file_extension": ".py",
+        "mimetype": "text/x-python",
+        "name": "python",
+        "nbconvert_exporter": "python",
+        "pygments_lexer": "ipython3",
+        "version": "3.7.4"}
 	},
-	
 	"nbformat": 4,
 	"nbformat_minor": 2}'''
 
@@ -45,11 +44,9 @@ def mergeAllJupyterFile(file=None):
     next_files = read_file_as_json(file)
 
     FileBoundry =   {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "# Merged Jupyter Notebook"
-   ]
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": ["# Merged Jupyter Notebook"]
    }
     
     FileBoundry['source'] = f'<hr><font color="green"><h1>from file: {file[:-6]}</h1></font>'
@@ -74,8 +71,7 @@ def create_base_for_results():
         
         import shutil
         shutil.move(base_file, move_to_path)
-        print(f"\n## Access merged file at \
-the following location ##\n{move_to_path}")
+        print(f"\n## Access merged file at the following location ##\n{move_to_path}")
     
     move_file_sub_log_dir()
 
@@ -108,7 +104,6 @@ def main():
             
     if not is_target_notebooks_exists(listOfFiles):
     	safelyExit()
-    	
     listOfFiles.sort()
     for file in listOfFiles:
         if ".ipynb" in file:
@@ -118,6 +113,5 @@ def main():
 if __name__=="__main__":
     try:
         main()
-        print("\n## Attempt Successfull!! ##")
-    except Exception as e:
-        print(e)
+        print("\n## Attempt Successful!! ##")
+    except Exception as e: print(e)
